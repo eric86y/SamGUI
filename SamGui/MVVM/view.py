@@ -199,6 +199,7 @@ class AppView(QWidget):
         super().__init__()
         self.view_model = view_model
         self.setObjectName("AppView")
+        self.setWindowTitle("SamGui 1.0")
         self.debug_view = None
         self.threadpool = QThreadPool()
         # create controllers
