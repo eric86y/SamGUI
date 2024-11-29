@@ -1,0 +1,1 @@
+- build application by running $pyinstaller main.spec
