@@ -452,9 +452,3 @@ class AppView(QWidget):
             error.type,
             error.message)
         dialog.exec()
-
-
-
-
-
-

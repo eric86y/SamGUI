@@ -16,18 +16,21 @@ from SamGui.Data import SegmentationData, SAMMode, Anchor, Label, SamResult, BBo
 
 
 class SAMRunner(QRunnable):
-    def __init__(self, data: SegmentationData, mode: SAMMode, adjust_bbox: bool):
+    def __init__(self, data: SegmentationData, mode: SAMMode, adjust_bbox: bool, encoder_path: str, decoder_path: str):
         super(SAMRunner, self).__init__()
         self.data = data
-        self.signals = WorkerSignals()
-        self.providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
-        self.encoder_path: str = "SamGui/Models/sam_vit_b_encoder.onnx"
-        self.decoder_path: str = "SamGui/Models/sam_vit_b_decoder.onnx"
-        self.encoder = ort.InferenceSession(self.encoder_path)
-        self.decoder = ort.InferenceSession(self.decoder_path)
         self.mode = mode
         self.adjust_bbox = adjust_bbox
+        self.signals = WorkerSignals()
 
+        self.providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
+        self.encoder_path = encoder_path
+        self.decoder_path = decoder_path
+
+        self.encoder = ort.InferenceSession(self.encoder_path)
+        self.decoder = ort.InferenceSession(self.decoder_path)
+
+        
 
     def process_anchors(self,
                         embeddings: npt.NDArray,

@@ -1,8 +1,8 @@
 """
 build with Nuitka:
 
-windows: nuitka --standalone --windows-console-mode=disable --plugin-enable=pyside6 --windows-icon-from-ico=logo.ico --include-data-dir=./SamGui/Assets=SamGui/Assets --include-data-dir=./Models=Models --include-data-files=./logo.png=logo.png main.py
-
+windows: nuitka --standalone --windows-console-mode=disable --plugin-enable=pyside6 --windows-icon-from-ico=logo.ico --include-data-dir=./SamGui/Assets=SamGui/Assets --include-data-dir=./SamGui/Models=SamGui/Models --include-data-files=./logo.png=logo.png main.py
+windows-debug: --standalone --plugin-enable=pyside6 --windows-icon-from-ico=logo.ico --include-data-dir=./SamGui/Assets=SamGui/Assets --include-data-dir=./SamGui/Models=SamGui/Models --include-data-files=./logo.png=logo.png main.py
 """
 
 import sys
