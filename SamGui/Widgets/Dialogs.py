@@ -404,8 +404,6 @@ class ImportProjectDialog(QDialog):
             notification.exec()
 
 
-
-
 class SamDialog(QDialog):
     sign_result = Signal(Image.Image)
     sign_sam_result = Signal(SamResult)
@@ -419,6 +417,8 @@ class SamDialog(QDialog):
         self.setFixedHeight(140)
         self.setWindowTitle("SAM Mask Generation")
         self.setWindowModality(Qt.WindowModality.ApplicationModal)
+        self.encoder_path: str = "SamGui/Models/sam_vit_b_encoder.onnx"
+        self.decoder_path: str = "SamGui/Models/sam_vit_b_decoder.onnx"
 
         self.data = data
         self.mode = mode
@@ -432,7 +432,6 @@ class SamDialog(QDialog):
         self.progress_bar.setMaximum(0)
 
         self.button_h_layout = QHBoxLayout()
-        #self.button_h_layout.setContentsMargins(0, 10, 0, 10)
         self.ok_btn = QPushButton("Ok")
         self.ok_btn.setObjectName("DialogButton")
         self.cancel_btn = QPushButton("Cancel")
@@ -454,7 +453,20 @@ class SamDialog(QDialog):
         self.show()
 
     def exec(self):
-        worker = SAMRunner(self.data, self.mode, self.adjust_bbox)
+ 
+        if not os.path.isfile(self.encoder_path):
+            error_msg = ErrorMessage("Encoder not Found", "The model encoder was not found. Make sure you have sam_vit_b_encoder.onnx in your SamGui/Models directory.")
+            self.s_error.emit(error_msg)
+            self.close()
+            return
+        
+        if not os.path.isfile(self.encoder_path):
+            error_msg = ErrorMessage("Decoder not Found", "The model encoder was not found. Make sure you have sam_vit_b_decoder.onnx in your SamGui/Models directory.")
+            self.s_error.emit(error_msg)
+            self.close()
+            return
+
+        worker = SAMRunner(self.data, self.mode, self.adjust_bbox, encoder_path=self.encoder_path, decoder_path=self.decoder_path)
         worker.signals.s_sam_result.connect(self.handle_sam_result)
         worker.signals.s_sam_batch_result.connect(self.handle_sam_batch_result)
         worker.signals.s_finished.connect(self.thread_complete)
@@ -472,7 +484,9 @@ class SamDialog(QDialog):
         self.sign_result.emit(result)
 
     def handle_error(self, error: ErrorMessage):
+        print(f"SamDialog -> Handling Error: {error}")
         self.s_error.emit(error)
+        self.close()
 
     def thread_complete(self):
         self.close()
